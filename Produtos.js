@@ -1,101 +1,43 @@
-import base64 from 'react-native-base64'
-import queryString from 'query-string';
-
+import { makeRequest } from './Ws';
 
 
 export async function getAll(){
     
-    const rawResponse = await fetch(global.wsIP+'/users', {
-        method: 'GET',
-        headers: {'Content-Type':'text/html',
-                'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-        }
-    });
-    
-    const json = await rawResponse.json();
-    
-    if (json.error){
-        return [];
-    } else {
-        return json.data;
-    }
+    const json = await makeRequest('GET','users');
+
+    return json;
     
 }
 
 
 export async function get(id){
-    const rawResponse = await fetch(global.wsIP+'/users/'+id, {
-        method: 'GET',
-        headers: {'Content-Type':'text/html',
-                'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-        }
-    });
     
-    const json = await rawResponse.json();
+    const json = await makeRequest('GET','users/'+id);
     
-    if (json.error){
-        return [];
-    } else {
-        return json.data;
-    }
+    return json;
     
 }
 
 export async function save(dados){
     
-    const rawResponse = await fetch(global.wsIP+'/users', {
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded',
-                'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-        },
-        body: queryString.stringify(dados)
-    });
-    
-    const json = await rawResponse.json();
-    
-    if (json.error){
-        return [];
-    } else {
-        return json.data;
-    }
+    const json = await makeRequest('POST','users', dados);
+
+    return json;
 }
 
 
 export async function update(dados){
-    console.log(dados);
-    const rawResponse = await fetch(global.wsIP+'/users', {
-        method: 'PUT',
-        headers: {'Content-Type':'application/x-www-form-urlencoded',
-                'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-        },
-        body: queryString.stringify(dados)
-    });
     
-    const json = await rawResponse.json();
-    console.log(json);
-    if (json.error){
-        return [];
-    } else {
-        return json.data;
-    }
+    const json = await makeRequest('PUT','users', dados);
+
+    return json;
 }
 
 
 export async function del(id){
     var dados = {'id':id};
-    const rawResponse = await fetch(global.wsIP+'/users', {
-        method: 'DELETE',
-        headers: {'Content-Type':'application/x-www-form-urlencoded',
-                'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-        },
-        body: queryString.stringify(dados)
-    });
     
-    const json = await rawResponse.json();
+    const json = await makeRequest('DELETE','users', dados);
     
-    if (json.error){
-        return [];
-    } else {
-        return json.data;
-    }
+    return json;
 }
