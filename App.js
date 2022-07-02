@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {AnimatFlatList, ScrollView, TouchableHighlight, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import { TouchableHighlight, Alert, RefreshControl, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import * as produtos from './Produtos';
 import CurrencyInput from 'react-native-currency-input'
 
@@ -9,6 +10,11 @@ const styles = StyleSheet.create({
     fontSize:20,
     margin:5,
     borderBottomWidth:1,
+  },
+  slideUp:{
+    height:30,
+    textAlign:'center',
+    backgroundColor:'green'
   },
   button:{
       backgroundColor:'#e69834',
@@ -34,6 +40,7 @@ class App extends Component {
 
   state = {
           salvarNovo:true,
+          refreshing:false,
           id:-1,
           nome:"",
           preco:0,
@@ -46,9 +53,10 @@ class App extends Component {
   }
 
   updateList(){
+    this.setState({refreshing: true});
     produtos.getAll()
       .then((prods) => {
-          this.setState({produtos:prods})
+          this.setState({produtos:prods, refreshing: false});
         }
       );
   }
@@ -86,9 +94,17 @@ class App extends Component {
   }
 
   deletar(id){
-    console.log(id);
-    produtos.del(id)
-    .then(() => this.updateList());
+    Alert.alert(
+      'Confirmação',
+      'Deseja excluir esse produto?',
+      [
+        {text: 'Não',style: 'cancel',},
+        {text: 'Sim', onPress: () => {
+            produtos.del(id).then(() => this.updateList());
+        }},
+      ],
+      {cancelable: false},
+    );
   }
   scrollHandler(){
     console.log("AAAAAAAAA");
@@ -100,8 +116,8 @@ class App extends Component {
 
               {this.state.salvarNovo == true ? 
                 /* SE */
-                <ScrollView onScroll={({nativeEvent}) => {
-                  console.log("AAAAAAAAAA");
+                <ScrollView style={{height:150}} onScroll={({nativeEvent}) => {
+                  console.log(nativeEvent);
                 }}>
                   <TextInput placeholder="Nome" style={styles.input} value={this.state.nome}
                       onChangeText={text => this.setState({nome:text})}
@@ -130,6 +146,7 @@ class App extends Component {
                         >
                         <Text style={styles.buttonText}>Salvar</Text>
                   </TouchableOpacity>
+                  <Text style={styles.slideUp}>=========</Text>
                 </ScrollView>
                 : 
                 /* SENÃO */
@@ -142,9 +159,11 @@ class App extends Component {
               }
 
 
-              <ScrollView onScroll={({nativeEvent}) => {
-                  console.log("BBBBBBBBB");
-                }}>
+              <ScrollView refreshControl={
+                    <RefreshControl 
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.updateList.bind(this)} />
+                }>
               {this.state.produtos.map( (prod,i) => 
                   <TouchableHighlight style={styles.itemList} key={i} 
                     onPress={() => this.editar(prod.id)} 
