@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {ScrollView, TouchableHighlight, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {AnimatFlatList, ScrollView, TouchableHighlight, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import * as produtos from './Produtos';
+import CurrencyInput from 'react-native-currency-input'
+
 
 const styles = StyleSheet.create({
   input:{
@@ -31,6 +33,7 @@ const styles = StyleSheet.create({
 class App extends Component {
 
   state = {
+          salvarNovo:true,
           id:-1,
           nome:"",
           preco:0,
@@ -50,6 +53,13 @@ class App extends Component {
       );
   }
 
+  novo(){
+    this.setState({salvarNovo:true});
+  }
+
+  limpar(){
+    this.setState({id:-1,nome:"",preco:0,descricao:""});
+  }
   
   salvar(){
     if (this.state.id == -1){
@@ -64,6 +74,8 @@ class App extends Component {
                       descricao:this.state.descricao})
                       .then(() => this.updateList());
     }
+    //this.limpar()
+    //this.setState({salvarNovo:false});
   }
 
   editar(id){
@@ -78,31 +90,61 @@ class App extends Component {
     produtos.del(id)
     .then(() => this.updateList());
   }
-
+  scrollHandler(){
+    console.log("AAAAAAAAA");
+  }
 
   render(){
 
     return <>
-              <TextInput placeholder="Nome" style={styles.input} value={this.state.nome}
-                  onChangeText={text => this.setState({nome:text})}
-                />
 
-              <TextInput placeholder="Preço" style={styles.input} value={this.state.preco+""}
-                  onChangeText={text => this.setState({preco:text})} keyboardType="numeric"
-                />
+              {this.state.salvarNovo == true ? 
+                /* SE */
+                <ScrollView onScroll={({nativeEvent}) => {
+                  console.log("AAAAAAAAAA");
+                }}>
+                  <TextInput placeholder="Nome" style={styles.input} value={this.state.nome}
+                      onChangeText={text => this.setState({nome:text})}
+                    />
 
-              <TextInput placeholder="Descrição" style={styles.input} value={this.state.descricao}
-                  onChangeText={text => this.setState({descricao:text})}
-                />
+                  <CurrencyInput
+                        value={this.state.preco}
+                        onChangeValue={text => this.setState({preco:text})}
+                        style={styles.input}
+                        prefix="R$"
+                        delimiter="."
+                        separator=","
+                        precision={2}
+                        onChangeText={(formattedValue) => {
+                          console.log(formattedValue); // $2,310.46
+                        }}
+                      />
 
-              <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => this.salvar()}
-                    >
-                    <Text style={styles.buttonText}>Salvar</Text>
-              </TouchableOpacity>
+                  <TextInput placeholder="Descrição" style={styles.input} value={this.state.descricao}
+                      onChangeText={text => this.setState({descricao:text})}
+                    />
 
-              <ScrollView>
+                  <TouchableOpacity
+                          style={styles.button}
+                          onPress={() => this.salvar()}
+                        >
+                        <Text style={styles.buttonText}>Salvar</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+                : 
+                /* SENÃO */
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => this.novo()}
+                  >
+                      <Text style={styles.buttonText}>Novo</Text>
+                </TouchableOpacity>
+              }
+
+
+              <ScrollView onScroll={({nativeEvent}) => {
+                  console.log("BBBBBBBBB");
+                }}>
               {this.state.produtos.map( (prod,i) => 
                   <TouchableHighlight style={styles.itemList} key={i} 
                     onPress={() => this.editar(prod.id)} 
