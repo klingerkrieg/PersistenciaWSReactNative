@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, ToastAndroid, Alert, Text, TextInput, StyleSheet} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import CurrencyInput from 'react-native-currency-input'
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 export function CadastroProduto(props){
 
     //estado inicial do formulario
-    var data = {nome:"", preco:0, descricao:"", foto:""}
+    var data = {nome:"", preco:0, descricao:"", foto:null}
 
     //caso seja para editar um item, pega as informacoes passadas
     if (props.navigation.getParam("data")){
@@ -40,6 +40,8 @@ export function CadastroProduto(props){
     const [preco, setPreco] = useState(data.preco);
     const [descricao, setDescricao] = useState(data.descricao);
     const [foto, setFoto] = useState(data.foto);
+    const [upload, setUpload] = useState(null);
+    const fotoRef = useRef();
 
 
     const limpar = () => {
@@ -73,14 +75,19 @@ export function CadastroProduto(props){
                     preco:preco,
                     descricao:descricao};
 
+        
         if (id == -1){
-            produtos.save(dados)
+            produtos.save(dados,upload)
                         .then(salvarCallBack);
         } else {
             dados.id = id;
-            produtos.update(dados)
+            produtos.update(dados,foto)
                         .then(salvarCallBack);
         }
+    }
+
+    const selectFile = (file) => {
+        setUpload(file);
     }
 
 
@@ -103,7 +110,7 @@ export function CadastroProduto(props){
                     onChangeText={text => setDescricao(text)}
                     />
 
-                <FilePicker />
+                <FilePicker onSelect={selectFile} />
 
                 <View style={styles.buttons}>
 

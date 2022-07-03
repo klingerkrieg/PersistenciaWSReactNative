@@ -1,10 +1,9 @@
-import { makeRequest } from './Ws';
+import { makeRequest, makeRequest2 } from './Ws';
 
 
 export async function getAll(){
     
     const json = await makeRequest('GET','users');
-
     return json;
     
 }
@@ -18,9 +17,17 @@ export async function get(id){
     
 }
 
-export async function save(dados){
-    
-    const json = await makeRequest('POST','users', dados);
+export async function save(dados, foto){
+
+    let arquivos = [];
+    if (foto != null){
+        arquivos['foto'] = foto[0];
+    }
+
+    const json = await makeRequest2('POST','users', dados, arquivos);
+
+    console.log("RESP");
+    console.log(json);
 
     return json;
 }

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
 
 export function FilePicker(props){
     const [fileResponse, setFileResponse] = useState([]);
-  
+
     const handleDocumentSelection = useCallback(async () => {
       try {
         const response = await DocumentPicker.pick({
@@ -18,10 +18,12 @@ export function FilePicker(props){
           type: [types.pdf],
         });
         setFileResponse(response);
+        props.onSelect(response);
       } catch (err) {
         console.warn(err);
       }
-    }, []);
+    }, [props]);
+    
   
     return (
       <View>
