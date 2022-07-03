@@ -5526,11 +5526,6 @@ react-native-screens@^3.14.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-swipe-up-down@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-swipe-up-down/-/react-native-swipe-up-down-1.2.0.tgz#9a5f8282333343966e18a5914df78e5da49d2003"
-  integrity sha512-pZa/EF3f85A/29thoLuVHHCNJO3GLN+zvuveW34qUgfJIvvx1Fh5dKMZlD2cHbOhhEvZaWds6MdrMQsoaTBRvw==
-
 react-native@0.68.2:
   version "0.68.2"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.68.2.tgz#07547cd31bb9335a7fa4135cfbdc24e067142585"

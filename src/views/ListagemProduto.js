@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { View, ToastAndroid, Alert, Text, TextInput, StyleSheet} from 'react-native';
-import SwipeUpDown from 'react-native-swipe-up-down';
+import { ToastAndroid, Alert, StyleSheet} from 'react-native';
 
 import ListagemSimples from '../components/ListagemSimples';
 import { Button, buttonTypes } from '../components/Button';
