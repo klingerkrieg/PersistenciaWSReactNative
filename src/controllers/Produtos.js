@@ -21,7 +21,8 @@ export async function save(dados, foto){
 
     let arquivos = [];
     if (foto != null){
-        arquivos['foto'] = foto[0];
+        console.log(foto);
+        arquivos['foto'] = foto;
     }
 
     const json = await makeRequest2('POST','users', dados, arquivos);

@@ -31,11 +31,12 @@ export async function makeRequest2(method,action,dados,arquivos){
     for ( var key in dados ) {
         formData.append(key, dados[key]);
     }
-    console.log(arquivos);
+    
     for ( var key in arquivos ) {
-        formData.append(key, arquivos[key]);
-        console.log(key)
-        console.log(arquivos[key])
+        let fileData = {name:arquivos[key].fileName,
+                    uri:arquivos[key].uri,
+                    type:arquivos[key].type}
+        formData.append(key, fileData);
     }
 
     let options = {}

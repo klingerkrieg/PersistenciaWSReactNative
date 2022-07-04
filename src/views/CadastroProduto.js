@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { View, ToastAndroid, Alert, Text, TextInput, StyleSheet} from 'react-native';
+import { View, ToastAndroid, Image, Text, TextInput, StyleSheet} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import CurrencyInput from 'react-native-currency-input'
-import { FilePicker } from '../components/FilePicker';
+import { FotoPicker } from '../components/FotoPicker';
 
 import * as produtos from '../controllers/Produtos';
 
@@ -22,6 +22,11 @@ const styles = StyleSheet.create({
       width:'100%',
       justifyContent:'center'
     },
+    foto:{
+        width:400,
+        height:300,
+        resizeMode: 'contain'
+    }
 })
 
 export function CadastroProduto(props){
@@ -41,9 +46,8 @@ export function CadastroProduto(props){
     const [descricao, setDescricao] = useState(data.descricao);
     const [foto, setFoto] = useState(data.foto);
     const [upload, setUpload] = useState(null);
-    const fotoRef = useRef();
-
-
+    
+    
     const limpar = () => {
         setId(-1);
         setNome("");
@@ -88,6 +92,7 @@ export function CadastroProduto(props){
 
     const selectFile = (file) => {
         setUpload(file);
+        setFoto(file)
     }
 
 
@@ -110,7 +115,14 @@ export function CadastroProduto(props){
                     onChangeText={text => setDescricao(text)}
                     />
 
-                <FilePicker onSelect={selectFile} />
+                <FotoPicker onSelect={selectFile} />
+
+                {foto &&
+                    <Image
+                        style={styles.foto}
+                        source={foto}
+                    />
+                }
 
                 <View style={styles.buttons}>
 
