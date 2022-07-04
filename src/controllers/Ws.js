@@ -7,7 +7,7 @@ export async function makeRequest(method,action,dados,arquivos){
     method = method.toUpperCase();
 
     if (method != "GET"){
-        let formData = new FormData();
+        var formData = new FormData();
 
         for ( var key in dados ) {
             formData.append(key, dados[key]);

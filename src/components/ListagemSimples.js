@@ -12,11 +12,7 @@ const styles = StyleSheet.create({
   },
   itemText:{
     fontSize:20,
-    color:'#000',
-    Text : {
-      color:'#000',
-      fontSize:20,
-    }
+    color:'#000'
   }
 });
 
