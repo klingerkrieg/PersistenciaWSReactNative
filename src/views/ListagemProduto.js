@@ -8,6 +8,7 @@ import { Button, buttonTypes } from '../components/Button';
 import * as produtos from '../controllers/Produtos';
 
 import "intl";
+import 'intl/locale-data/jsonp/pt-BR'
 
 const styles = StyleSheet.create({
   
@@ -118,7 +119,11 @@ class ListagemProduto extends Component {
                         onLongPress={this.deletar} 
                         update={this.updateList} 
                         item="nome"
-                        item2={(item) => <Text>{item.nome} - R${new Intl.NumberFormat([], { style: 'currency', currency: 'BRL' }).format(item.preco)}</Text>}
+                        item2={(item) => <Text>{item.nome} - R$ {new Intl.NumberFormat('br',
+                                                                        {styles:'currency', 
+                                                                        currency: 'BRL',  
+                                                                        minimumFractionDigits: 2}).format(item.preco)}
+                                          </Text>}
                         navigate={navigate}
                         />
 
