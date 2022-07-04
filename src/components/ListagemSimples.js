@@ -12,7 +12,11 @@ const styles = StyleSheet.create({
   },
   itemText:{
     fontSize:20,
-    color:'#000'
+    color:'#000',
+    Text : {
+      color:'#000',
+      fontSize:20,
+    }
   }
 });
 
@@ -48,7 +52,10 @@ class ListagemSimples extends Component {
                   <TouchableHighlight style={styles.itemList} key={i} 
                     onPress={this.props.onPress.bind(this,item.id)} 
                     onLongPress={this.props.onLongPress.bind(this,item.id)}>
-                    <Text style={styles.itemText}>{item[this.props.item]}</Text>
+                    {/*<Text style={styles.itemText}>{item[this.props.item]}</Text>*/}
+                    <Text style={styles.itemText}>
+                      {this.props.item2(item)}
+                    </Text>
                   </TouchableHighlight>
               )}
               </ScrollView>

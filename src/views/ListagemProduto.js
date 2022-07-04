@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ToastAndroid, Alert, StyleSheet} from 'react-native';
+import { ToastAndroid, Alert, StyleSheet, Text} from 'react-native';
 
 import ListagemSimples from '../components/ListagemSimples';
 import { Button, buttonTypes } from '../components/Button';
@@ -7,6 +7,7 @@ import { Button, buttonTypes } from '../components/Button';
 //Controller
 import * as produtos from '../controllers/Produtos';
 
+import "intl";
 
 const styles = StyleSheet.create({
   
@@ -117,6 +118,7 @@ class ListagemProduto extends Component {
                         onLongPress={this.deletar} 
                         update={this.updateList} 
                         item="nome"
+                        item2={(item) => <Text>{item.nome} - R${new Intl.NumberFormat([], { style: 'currency', currency: 'BRL' }).format(item.preco)}</Text>}
                         navigate={navigate}
                         />
 
