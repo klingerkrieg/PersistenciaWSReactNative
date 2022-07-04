@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { View, ToastAndroid, Image, Text, TextInput, StyleSheet} from 'react-native';
+import { View, ToastAndroid, Image, ScrollView, StyleSheet} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
-import CurrencyInput from 'react-native-currency-input'
 import { FotoPicker } from '../components/FotoPicker';
 
 import * as produtos from '../controllers/Produtos';
+import { LabeledInput } from '../components/LabeledInput';
 
 const styles = StyleSheet.create({
     input:{
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 export function CadastroProduto(props){
 
     //estado inicial do formulario
-    var data = {nome:"", preco:0, descricao:"", foto:""}
+    var data = {id:-1, nome:"", preco:0, descricao:"", foto:""}
 
     //caso seja para editar um item, pega as informacoes passadas
     if (props.navigation.getParam("data")){
@@ -41,7 +41,7 @@ export function CadastroProduto(props){
     }
 
     //cria os atributos de estado
-    const [id, setId] = useState(-1);
+    const [id, setId] = useState(data.id);
     const [nome, setNome] = useState(data.nome);
     const [preco, setPreco] = useState(data.preco);
     const [descricao, setDescricao] = useState(data.descricao);
@@ -86,7 +86,7 @@ export function CadastroProduto(props){
                         .then(salvarCallBack);
         } else {
             dados.id = id;
-            produtos.update(dados,foto)
+            produtos.update(dados,upload)
                         .then(salvarCallBack);
         }
     }
@@ -98,46 +98,36 @@ export function CadastroProduto(props){
     }
 
 
-    return <View>
-            <TextInput placeholder="Nome" style={styles.input} value={nome}
-                onChangeText={text => setNome(text)}
-                placeholderTextColor="#ccc"
+    return <ScrollView>
+
+            <LabeledInput label="Nome" value={nome} 
+                          onChangeText={text => setNome(text)} />
+
+            <LabeledInput label="Preço" value={preco} type="currency"
+                          onChangeText={text => setPreco(text)} />
+
+            <LabeledInput label="Descrição" value={descricao} type="textarea"
+                          onChangeText={text => setDescricao(text)} />
+
+            <FotoPicker onSelect={selectFile} />
+
+            {foto != "" &&
+                <Image
+                    style={styles.foto}
+                    source={foto}
                 />
+            }
 
-            <CurrencyInput
-                        value={preco}
-                        onChangeValue={text => setPreco(text)}
-                        style={styles.input}
-                        prefix="R$"
-                        delimiter="."
-                        separator=","
-                        precision={2}
-                    />
+            <View style={styles.buttons}>
 
-                <TextInput placeholder="Descrição" style={styles.input} value={descricao}
-                    onChangeText={text => setDescricao(text)}
-                    placeholderTextColor="#ccc"
-                    />
+                <Button type={buttonTypes.success} 
+                        style={{width:150}}
+                        onPress={() => salvar()}>Salvar</Button>
+            
+                <Button type={buttonTypes.warning} 
+                        style={{width:150}}
+                        onPress={() => limpar()}>Limpar</Button>
 
-                <FotoPicker onSelect={selectFile} />
-
-                {foto != "" &&
-                    <Image
-                        style={styles.foto}
-                        source={foto}
-                    />
-                }
-
-                <View style={styles.buttons}>
-
-                    <Button type={buttonTypes.success} 
-                            style={{width:150}}
-                            onPress={() => salvar()}>Salvar</Button>
-                
-                    <Button type={buttonTypes.warning} 
-                            style={{width:150}}
-                            onPress={() => limpar()}>Limpar</Button>
-
-                </View>
-        </View>
+            </View>
+        </ScrollView>
 };

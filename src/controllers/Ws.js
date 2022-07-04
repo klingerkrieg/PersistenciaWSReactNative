@@ -1,48 +1,32 @@
 import base64 from 'react-native-base64'
-import queryString from 'query-string';
 import FormData from 'form-data'
 
-export async function makeRequest(method,action,data){
-    if (data == null){
-        data = "";
-    }
-    try{
-        const rawResponse = await fetch(global.wsIP+'/'+action, {
-            method: method,
-            headers: {'Content-Type':'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword),
-            },
-            body: queryString.stringify(data)
-        });
-
-        const json = await rawResponse.json();
-
-        return json;
-    } catch(err){
-        return {error:true,message:err}
-    }
-}
-
-export async function makeRequest2(method,action,dados,arquivos){
+export async function makeRequest(method,action,dados,arquivos){
     const url = global.wsIP+'/'+action;
 
-    let formData = new FormData();
+    method = method.toUpperCase();
 
-    for ( var key in dados ) {
-        formData.append(key, dados[key]);
-    }
-    
-    for ( var key in arquivos ) {
-        let fileData = {name:arquivos[key].fileName,
-                    uri:arquivos[key].uri,
-                    type:arquivos[key].type}
-        formData.append(key, fileData);
+    if (method != "GET"){
+        let formData = new FormData();
+
+        for ( var key in dados ) {
+            formData.append(key, dados[key]);
+        }
+        
+        for ( var key in arquivos ) {
+            let fileData = {name:arquivos[key].fileName,
+                        uri:arquivos[key].uri,
+                        type:arquivos[key].type}
+            formData.append(key, fileData);
+        }
     }
 
     let options = {}
     options.method = method;
     options.headers = {'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)};
-    options.body = formData;
+    if (method != 'GET'){
+        options.body = formData;
+    }
     
 
     try{
@@ -54,7 +38,7 @@ export async function makeRequest2(method,action,dados,arquivos){
     }
 }
 
-export async function getImage(path,name){
+export async function getRemoteImage(path,name){
     let options = {
         method:'GET',
         fileCache:true,
