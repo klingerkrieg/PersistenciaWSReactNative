@@ -54,52 +54,31 @@ export async function makeRequest2(method,action,dados,arquivos){
     }
 }
 
-/*
-export async function makeRequest2(method,action,dados){
-    const url = global.wsIP+'/'+action;
-
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-
-    const data = new FormData(dados);
-
-    for ( var key in dados ) {
-        form_data.append(key, item[key]);
+export async function getImage(path,name){
+    let options = {
+        method:'GET',
+        fileCache:true,
+        headers:{'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)}
     }
-
-    /*if (this.state.rg != null){ 
-        if(this.state.rg.uri != null){
-            console.log("Entrou aqui");
-            data.append('rg',{
-                name: this.state.rg.fileName,
-                type: this.state.rg.type,
-                uri:
-                    Platform.OS === 'android'
-                    ? this.state.rg.uri
-                    : this.state.rg.uri.replace('file://', ''),
-                })
-        } else{
-            console.log("Entrou aqui 3");
-            data.append('rg', this.state.rg.replace('static/fotos/', ''))
-        }
-    }//
-
-    xhr.setRequestHeader('Authorization', 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword))
+    
+    let url = global.wsIP + "/" + path + "/" + name;
+    
     try{
-        xhr.send(data);
-    } catch(err){
-        return {error:true,message:err}
-    }
-    xhr.onreadystatechange = e => {
-        if (xhr.readyState !== 4) {
-            return;
-        }
-        if (xhr.status === 200) {
-            return xhr.responseText;
-        } else {
-            return {error:true,message:xhr.responseText};
-        }
-    };
-}
+        const resp = await fetch(url,options);
+        const blob = await resp.blob();
+        //transforma o blob para uma string base64
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+              const base64data = reader.result;
+              resolve(base64data);
+            };
+          });
 
-*/
+    } catch(e){
+        console.log("Erro ao recuperar imagem:");
+        console.log(e);
+        return "";
+    }
+}

@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     padding:20,
   },
   itemText:{
-    fontSize:20
+    fontSize:20,
+    color:'#000'
   }
 });
 

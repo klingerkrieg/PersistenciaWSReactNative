@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
       fontSize:20,
       margin:5,
       borderBottomWidth:1,
+      color:"#000",
     },
     titleText:{
       fontSize:20,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
 export function CadastroProduto(props){
 
     //estado inicial do formulario
-    var data = {nome:"", preco:0, descricao:"", foto:null}
+    var data = {nome:"", preco:0, descricao:"", foto:""}
 
     //caso seja para editar um item, pega as informacoes passadas
     if (props.navigation.getParam("data")){
@@ -93,12 +94,14 @@ export function CadastroProduto(props){
     const selectFile = (file) => {
         setUpload(file);
         setFoto(file)
+        console.log(file);
     }
 
 
     return <View>
             <TextInput placeholder="Nome" style={styles.input} value={nome}
                 onChangeText={text => setNome(text)}
+                placeholderTextColor="#ccc"
                 />
 
             <CurrencyInput
@@ -113,11 +116,12 @@ export function CadastroProduto(props){
 
                 <TextInput placeholder="Descrição" style={styles.input} value={descricao}
                     onChangeText={text => setDescricao(text)}
+                    placeholderTextColor="#ccc"
                     />
 
                 <FotoPicker onSelect={selectFile} />
 
-                {foto &&
+                {foto != "" &&
                     <Image
                         style={styles.foto}
                         source={foto}

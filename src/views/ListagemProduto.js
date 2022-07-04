@@ -28,7 +28,10 @@ class ListagemProduto extends Component {
     let context = this;
     this.navigationListener = this.props.navigation.addListener('willFocus', payload => {
       //por algum motivo isso só funciona se o construtor for definido em ListagemSimples.js
-      context.listagemRef.current.update();
+      try{
+        context.listagemRef.current.update();
+      } catch(e){
+      }
     })
   }
 
@@ -65,7 +68,7 @@ class ListagemProduto extends Component {
         );
         console.log(resp)
       } else {
-
+        
         this.props.navigate("Cadastro de produtos",{data:resp.data});
 
       }
