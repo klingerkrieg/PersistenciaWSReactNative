@@ -23,7 +23,15 @@ export async function makeRequest(method,action,dados,arquivos){
 
     let options = {}
     options.method = method;
-    options.headers = {'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)};
+    
+    //Basic Authorization
+    //options.headers = {'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)};
+
+    //Authorization com token
+    if (global.token != null){
+        options.headers = {'x-access-token': global.token};
+    }
+
     if (method != 'GET'){
         options.body = formData;
     }

@@ -38,6 +38,10 @@ export function LabeledInput(props){
         input = <TextInput value={props.value} style={styles.input}
                         onChangeText={text => props.onChangeText(text)} />
     } else
+    if (type == 'password'){
+        input = <TextInput value={props.value} style={styles.input} secureTextEntry={true}
+                        onChangeText={text => props.onChangeText(text)} />
+    } else
     if (type == 'textarea'){
         input = <TextInput value={props.value} style={styles.input}
                         multiline
