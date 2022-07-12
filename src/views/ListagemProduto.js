@@ -118,8 +118,7 @@ class ListagemProduto extends Component {
                         onPress={this.editar} 
                         onLongPress={this.deletar} 
                         update={this.updateList} 
-                        item="nome"
-                        item2={(item) => <Text>{item.nome} - R$ {new Intl.NumberFormat('br',
+                        item={(item) => <Text>{item.nome} - R$ {new Intl.NumberFormat('br',
                                                                         {styles:'currency', 
                                                                         currency: 'BRL',  
                                                                         minimumFractionDigits: 2}).format(item.preco)}

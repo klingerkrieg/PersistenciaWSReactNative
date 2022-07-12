@@ -50,7 +50,7 @@ class ListagemSimples extends Component {
                     onLongPress={this.props.onLongPress.bind(this,item.id)}>
                     {/*<Text style={styles.itemText}>{item[this.props.item]}</Text>*/}
                     <Text style={styles.itemText}>
-                      {this.props.item2(item)}
+                      {this.props.item(item)}
                     </Text>
                   </TouchableHighlight>
               )}
