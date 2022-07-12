@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { ToastAndroid, Alert, StyleSheet, Text} from 'react-native';
 
-import ListagemSimples from '../components/ListagemSimples';
+import { ListagemSimples } from '../components/ListagemSimples';
 import { Button, buttonTypes } from '../components/Button';
 
 //Controller
@@ -40,7 +40,7 @@ class ListagemProduto extends Component {
 
   updateList(){
     /* Contexto de ListagemSimples */
-    this.setState({refreshing: true});
+    setRefreshing(true);
     produtos.getAll()
       .then((resp) => {
           if (resp.error){
@@ -51,7 +51,8 @@ class ListagemProduto extends Component {
             );
             console.log(resp)
           } else {
-            this.setState({items:resp.data, refreshing: false});
+            setItems(resp.data);
+            setRefreshing(false);
           }
         }
       );
@@ -71,7 +72,7 @@ class ListagemProduto extends Component {
         console.log(resp)
       } else {
         
-        this.props.navigate("Cadastro de produtos",{data:resp.data});
+        this.navigate("Cadastro de produtos",{data:resp.data});
 
       }
     });
