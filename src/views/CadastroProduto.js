@@ -40,6 +40,7 @@ export function CadastroProduto(props){
         data = props.navigation.getParam("data");
     }
 
+
     //cria os atributos de estado
     const [id, setId] = useState(data.id);
     const [nome, setNome] = useState(data.nome);

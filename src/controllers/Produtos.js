@@ -17,8 +17,9 @@ export async function get(id){
         //entao é feito um fetch para as imagens e transforma-se 
         //a imagem para uma string base 64, não fosse isso
         //poderia se usar o uri com o endereço web da imagem
-        let base64 = await getRemoteImage('uploads',json.data.foto);
+        let base64 = await getRemoteImage('uploads/'+json.data.foto);
         json.data.foto = {uri: base64};
+        console.log(json.data.foto);
     }
     return json;
     

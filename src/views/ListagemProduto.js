@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ToastAndroid, Alert, StyleSheet, Text} from 'react-native';
+import { ToastAndroid, Alert, StyleSheet, Text, View} from 'react-native';
 
 import { ListagemSimples } from '../components/ListagemSimples';
 import { Button, buttonTypes } from '../components/Button';

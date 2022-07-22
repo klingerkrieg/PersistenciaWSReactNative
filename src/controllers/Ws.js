@@ -93,6 +93,13 @@ export async function getRemoteImage(path){
     
     let url = global.wsIP + "/" + path;
     
+    if (global.debug){
+        console.log("\r\n");
+        console.log("GET " + url);
+        console.log("====Headers=====");
+        console.log("\t" + options.headers['Content-Type']);
+    }
+
     try{
         const resp = await fetch(url,options);
         const blob = await resp.blob();
@@ -101,8 +108,8 @@ export async function getRemoteImage(path){
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = () => {
-              const base64data = reader.result;
-              resolve(base64data);
+                const base64data = reader.result;
+                resolve(base64data);
             };
           });
 
