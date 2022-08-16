@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ToastAndroid, Image, ScrollView, StyleSheet} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import { FotoPicker } from '../components/FotoPicker';
@@ -36,10 +36,9 @@ export function CadastroProduto(props){
     var data = {id:-1, nome:"", preco:0, descricao:"", foto:""}
 
     //caso seja para editar um item, pega as informacoes passadas
-    if (props.navigation.getParam("data")){
-        data = props.navigation.getParam("data");
+    if (props.route.params && props.route.params.data){
+        data = props.route.params.data;
     }
-
 
     //cria os atributos de estado
     const [id, setId] = useState(data.id);
@@ -49,6 +48,15 @@ export function CadastroProduto(props){
     const [foto, setFoto] = useState(data.foto);
     const [upload, setUpload] = useState(null);
     
+
+    useEffect(() => {
+        if (id != -1){
+            produtos.getPhoto(data).then((json)=>{
+                console.log(json);
+                setFoto(json.foto);
+            });
+        }
+    }, [id, data]);
     
     const limpar = () => {
         setId(-1);
@@ -56,6 +64,7 @@ export function CadastroProduto(props){
         setPreco(0);
         setDescricao("");
         setFoto("");
+        setUpload(null);
     }
 
     const salvarCallBack = (resp) => {

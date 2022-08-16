@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import { ToastAndroid, Alert, StyleSheet, Text, View} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import { ToastAndroid, Alert, StyleSheet, Text} from 'react-native';
 
 import { ListagemSimples } from '../components/ListagemSimples';
 import { Button, buttonTypes } from '../components/Button';
@@ -14,31 +14,24 @@ const styles = StyleSheet.create({
   
 });
 
-class ListagemProduto extends Component {
+export function ListagemProduto (props){
 
-  state = {};
+  const listagemRef = React.useRef(null);
+  const navigation = props.navigation;
+  const { navigate } = props.navigation;
 
-  constructor(props){
-    super(props);
-    this.listagemRef = React.createRef();
-  }
-
-  componentDidMount(){
-    //Principal modificacao
-    //https://reactnavigation.org/docs/navigation-events#navigationaddlistener
-
-    let context = this;
-    this.navigationListener = this.props.navigation.addListener('willFocus', payload => {
-      //por algum motivo isso só funciona se o construtor for definido em ListagemSimples.js
-      try{
-        context.listagemRef.current.update();
-      } catch(e){
-      }
+  useEffect(() => {
+    //Ao carregar a tela pela primeira vez
+    //console.log("useEffect");
+    let navigationListener = navigation.addListener('focus', payload => {
+      //Irá verificar todas as vezes que essa tela receber o foco
+      //console.log("FOCO")
+      listagemRef.current.update(); //Atualiza a lista
     })
-  }
+  }, [listagemRef, navigation]);
 
 
-  updateList(){
+  const updateList = () => {
     /* Contexto de ListagemSimples */
     setRefreshing(true);
     produtos.getAll()
@@ -59,7 +52,7 @@ class ListagemProduto extends Component {
   }
 
 
-  editar(id){
+  const editar = (id) =>{
     /* Contexto de ListagemSimples */
     produtos.get(id).then((resp) => {
 
@@ -72,13 +65,13 @@ class ListagemProduto extends Component {
         console.log(resp)
       } else {
         
-        this.navigate("Cadastro de produtos",{data:resp.data});
+        navigate("Cadastro de produtos",{data:resp.data});
 
       }
     });
   }
 
-  deletar(id){
+  const deletar = (id) => {
     /* Contexto de ListagemSimples */
     //Esta função irá ser executada no contexto do ListagemSimples
     //Então ela poderá usar por exemplo this.update (Que é um método que existe
@@ -96,9 +89,9 @@ class ListagemProduto extends Component {
                   ToastAndroid.LONG,
                   ToastAndroid.CENTER
                 );
-                console.log(resp)
+                listagemRef.current.update();
               } else {
-                this.update();
+                listagemRef.current.update();
               }
             });
         }},
@@ -108,32 +101,26 @@ class ListagemProduto extends Component {
   }
   
 
-  render(){
-    const { navigate } = this.props.navigation;
+  return <>
+          {/* este componente ListagemSimples irá receber 
+            e executar as funções definidas em ListagemProduto (Aqui) */}
+            <ListagemSimples 
+                      ref={listagemRef}
+                      onPress={editar} 
+                      onLongPress={deletar} 
+                      update={updateList} 
+                      item={(item) => <Text>{item.nome} - R$ {new Intl.NumberFormat('br',
+                                                                      {styles:'currency', 
+                                                                      currency: 'BRL',  
+                                                                      minimumFractionDigits: 2}).format(item.preco)}
+                                        </Text>}
+                      navigate={navigate}
+                      />
 
-    return <>
-            {/* este componente ListagemSimples irá receber 
-              e executar as funções definidas em ListagemProduto (Aqui) */}
-              <ListagemSimples 
-                        ref={this.listagemRef}
-                        onPress={this.editar} 
-                        onLongPress={this.deletar} 
-                        update={this.updateList} 
-                        item={(item) => <Text>{item.nome} - R$ {new Intl.NumberFormat('br',
-                                                                        {styles:'currency', 
-                                                                        currency: 'BRL',  
-                                                                        minimumFractionDigits: 2}).format(item.preco)}
-                                          </Text>}
-                        navigate={navigate}
-                        />
+            <Button 
+              type={buttonTypes.normal}
+              onPress={() => navigate("Cadastro de produtos") }>Novo</Button>
 
-              <Button 
-                type={buttonTypes.normal}
-                onPress={() => navigate("Cadastro de produtos") }>Novo</Button>
-
-            </>
-  }
+          </>
 }
-
-export default ListagemProduto;
 

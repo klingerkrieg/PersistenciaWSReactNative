@@ -1,4 +1,4 @@
-import { makeRequest, getRemoteImage } from './Ws';
+import { makeRequest, getRemoteImage } from '../components/Ws';
 
 
 export async function getAll(){
@@ -9,18 +9,24 @@ export async function getAll(){
 }
 
 
-export async function get(id){
-    
-    let json = await makeRequest('GET','produtos/'+id);
-    if (json.data.foto != ""){
+export async function getPhoto(json){
+    console.log(json);
+    if (json.foto != ""){
         //tem que lembrar que as imagens tambem estao protegidas por senha
         //entao é feito um fetch para as imagens e transforma-se 
         //a imagem para uma string base 64, não fosse isso
         //poderia se usar o uri com o endereço web da imagem
-        let base64 = await getRemoteImage('uploads/'+json.data.foto);
-        json.data.foto = {uri: base64};
-        console.log(json.data.foto);
+        let base64 = await getRemoteImage('uploads/'+json.foto);
+        json.foto = {uri: base64};
     }
+    return json;
+    
+}
+
+
+export async function get(id){
+    
+    let json = await makeRequest('GET','produtos/'+id);
     return json;
     
 }

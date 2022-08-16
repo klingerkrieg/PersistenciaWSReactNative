@@ -1,4 +1,4 @@
-import { makeRequest, getRemoteImage } from './Ws';
+import { makeRequest, getRemoteImage } from '../components/Ws';
 
 
 export async function logar(dados){
