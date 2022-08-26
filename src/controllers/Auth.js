@@ -4,6 +4,10 @@ import { makeRequest, getRemoteImage } from '../components/Ws';
 export async function logar(dados){
     
     const json = await makeRequest('POST','login',dados);
-    return json;
-    
+    if (json.error == 0){
+        global.token = resp.accessToken
+        return true;
+    } else {
+        return json;
+    }    
 }

@@ -103,6 +103,7 @@ export async function getRemoteImage(path){
     }
 
     if (global.token != null){
+        //options.headers = {'Authorization': 'Bearer '+global.token};
         options.headers = {'x-access-token': global.token};
     }
     

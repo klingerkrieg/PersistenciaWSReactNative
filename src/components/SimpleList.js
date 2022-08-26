@@ -12,38 +12,44 @@ const styles = StyleSheet.create({
         padding:20,
     },
     itemText:{
-        fontSize:20,
+        fontSize:global.normalFontSize,
         color:'#000'
     }
 });
 
 
-export const ListagemSimples = React.forwardRef((props, ref) => {
+export const SimpleList = React.forwardRef((props, ref) => {
 
-    [refreshing,setRefreshing] = useState(false);
-    [items, setItems] = useState([]);
+    const [refreshing,setRefreshing] = useState(false);
+    const [items, setItems] = useState([]);
 
     const onPress = (item) => {
       if (props.onPress != undefined){
-        props.onPress(item.id);
+        props.onPress(item);
       }
     };
 
     const onLongPress = (item) => {
       if (props.onLongPress != undefined){
-        props.onLongPress(item.id);
+        props.onLongPress(item);
       }
     };
 
-    const _update = () => {
-      props.update.bind(this)();
-    }
+    const _update = props.update.bind(this);
 
+    /** Permite o uso dessas funcoes atraves do ref.current */
     useImperativeHandle(ref, () => ({
       update(){
         _update();
+      },
+      setRefreshing(val){
+        setRefreshing(val)
+      },
+      setItems(val){
+        setItems(val)
       }
     }));
+
 
 
     return <View ref={ref}> 

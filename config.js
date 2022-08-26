@@ -9,3 +9,7 @@ global.debug         = true;
 //nao utilizado
 global.wsUser        = "admin";
 global.wsPassword    = "123456";
+
+
+global.titleFontSize  = 20;
+global.normalFontSize = 18;

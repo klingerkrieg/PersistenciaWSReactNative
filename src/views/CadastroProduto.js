@@ -1,62 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { View, ToastAndroid, Image, ScrollView, StyleSheet} from 'react-native';
+import { View, ToastAndroid, Image, ScrollView} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import { FotoPicker } from '../components/FotoPicker';
 
-import * as produtos from '../controllers/Produtos';
+import * as controller from '../controllers/Produtos';
 import { LabeledInput } from '../components/LabeledInput';
+import { styles } from './Estilo';
 
-const styles = StyleSheet.create({
-    input:{
-      fontSize:20,
-      margin:5,
-      borderBottomWidth:1,
-      color:"#000",
-    },
-    titleText:{
-      fontSize:20,
-      textAlign:'center',
-      fontWeight:'bold'
-    },
-    buttons:{
-      flexDirection:'row',
-      width:'100%',
-      justifyContent:'center'
-    },
-    foto:{
-        width:400,
-        height:300,
-        resizeMode: 'contain'
-    }
-})
+
 
 export function CadastroProduto(props){
 
-    //estado inicial do formulario
-    var data = {id:-1, nome:"", preco:0, descricao:"", foto:""}
+    let defaultId = -1;
 
-    //caso seja para editar um item, pega as informacoes passadas
-    if (props.route.params && props.route.params.data){
-        data = props.route.params.data;
+    //se veio uma id via parametro
+    //quer dizer que está editando algum produto
+    if (route.params != undefined){
+        if (route.params.id != undefined){
+            defaultId = route.params.id;
+        }
     }
 
     //cria os atributos de estado
-    const [id, setId] = useState(data.id);
-    const [nome, setNome] = useState(data.nome);
-    const [preco, setPreco] = useState(data.preco);
-    const [descricao, setDescricao] = useState(data.descricao);
-    const [foto, setFoto] = useState(data.foto);
+    const [id, setId] = useState(defaultId);
+    const [nome, setNome] = useState("");
+    const [preco, setPreco] = useState(0);
+    const [descricao, setDescricao] = useState("");
+    const [foto, setFoto] = useState("");
     const [upload, setUpload] = useState(null);
-    
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (id != -1){
-            produtos.getPhoto(data).then((json)=>{
-                console.log(json);
-                setFoto(json.foto);
+    
+    useEffect(()=>{
+        /**
+         * Ao abrir essa tela, busca do banco os dados do produto
+         */
+         if (id != -1){
+            controller.get(id).then((resp) => {
+                if (resp.error){
+                    //Se der erro volta
+                    ToastAndroid.showWithGravity(
+                        "Houve um erro ao recuperar a renovação",
+                        ToastAndroid.LONG,
+                        ToastAndroid.CENTER
+                    );
+                    navigation.goBack();
+                } else {
+
+                    //preenche as variaveis com as informacoes que vieram do banco
+                    setNome(resp.data.nome);
+                    setPreco(resp.data.preco);
+                    setDescricao(resp.data.descricao);
+
+                    //se deu certo, baixa a foto
+                    controller.getPhoto(resp.data).then((json)=>{
+                        setFoto(json.foto);
+                        setLoading(false);
+                    });
+        
+                }
             });
+        } else {
+            //se for um novo cadastro
+            setLoading(false);
         }
-    }, [id, data]);
+    },[navigation])
+    
     
     const limpar = () => {
         setId(-1);
@@ -92,11 +101,11 @@ export function CadastroProduto(props){
 
         
         if (id == -1){
-            produtos.save(dados,upload)
+            controller.save(dados,upload)
                         .then(salvarCallBack);
         } else {
             dados.id = id;
-            produtos.update(dados,upload)
+            controller.update(dados,upload)
                         .then(salvarCallBack);
         }
     }
@@ -104,11 +113,14 @@ export function CadastroProduto(props){
     const selectFile = (file) => {
         setUpload(file);
         setFoto(file)
-        console.log(file);
     }
 
-
-    return <ScrollView>
+    if (loading == true) {
+        return  <View style={styles.centerMessage}>
+                    <Text style={styles.messages}>Carregando...</Text>
+                </View>
+    } else {
+        return <ScrollView>
 
             <LabeledInput label="Nome" value={nome} 
                           onChangeText={text => setNome(text)} />
@@ -140,4 +152,5 @@ export function CadastroProduto(props){
 
             </View>
         </ScrollView>
+    }
 };

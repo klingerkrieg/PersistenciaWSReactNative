@@ -1,27 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { View, ToastAndroid, Image, ScrollView, StyleSheet} from 'react-native';
+import { ToastAndroid} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import { LabeledInput } from '../components/LabeledInput';
 import * as auth from '../controllers/Auth';
 
-const styles = StyleSheet.create({
-    input:{
-      fontSize:20,
-      margin:5,
-      borderBottomWidth:1,
-      color:"#000",
-    },
-    titleText:{
-      fontSize:20,
-      textAlign:'center',
-      fontWeight:'bold'
-    },
-    buttons:{
-      flexDirection:'row',
-      width:'100%',
-      justifyContent:'center'
-    },
-})
+import { styles } from './Estilo';
 
 export function Login(props){
 
@@ -33,10 +16,8 @@ export function Login(props){
         
         auth.logar({email:email, senha:senha}).then(resp => {
             
-            if (resp.error == 0){
-                global.token = resp.accessToken
+            if (resp == true){
                 props.navigation.navigate("Produtos");
-
             } else {
                 ToastAndroid.showWithGravity(
                     "Usuário ou senha inválida",
