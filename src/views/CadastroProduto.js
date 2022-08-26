@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ToastAndroid, Image, ScrollView} from 'react-native';
+import { View, ToastAndroid, Image, ScrollView, Text} from 'react-native';
 import { Button, buttonTypes } from '../components/Button';
 import { FotoPicker } from '../components/FotoPicker';
 
@@ -9,7 +9,7 @@ import { styles } from './Estilo';
 
 
 
-export function CadastroProduto(props){
+export function CadastroProduto({navigation, route}){
 
     let defaultId = -1;
 

@@ -7,6 +7,11 @@ if (colorScheme == 'dark') {
 }
 
 export const styles = StyleSheet.create({
+    buttons:{
+        flexDirection:'row',
+        width:'100%',
+        justifyContent:'center',
+    },
     messages:{
         color:'#000',
         fontSize:global.normalFontSize,
@@ -54,16 +59,11 @@ export const styles = StyleSheet.create({
         justifyContent:'flex-end',
         marginBottom:30,
     },
-    logo:{
-        flexDirection:'column',
-        alignItems:'center',
-        marginTop:40,
-        marginBottom:40,
-    },
-    logoText:{
-        fontSize:80,
-        color:"#1f90ff",
-        fontWeight:'bold',
+    foto:{
+        width:380,
+        height:300,
+        resizeMode: 'contain',
+        alignSelf: 'center',
     },
     logoTextBellow:{
         fontSize:20,

@@ -12,10 +12,6 @@ import { styles } from './Estilo';
 import "intl";
 import 'intl/locale-data/jsonp/pt-BR'
 
-const styles = StyleSheet.create({
-  
-});
-
 export function ListagemProduto (props){
 
   const listRef = React.useRef(null);

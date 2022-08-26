@@ -1141,6 +1141,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@react-native-community/checkbox@^0.5.12":
+  version "0.5.12"
+  resolved "https://registry.yarnpkg.com/@react-native-community/checkbox/-/checkbox-0.5.12.tgz#1f55a38bbcd5f10ca853db0c6a9f1c4beccc37af"
+  integrity sha512-Dd3eiAW7AkpRgndwKGdgQ6nNgEmZlVD8+KAOBqwjuZQ/M67BThXJ9Ni+ydpPjNm4e28KXmIILfkvhcDt0ZoFTQ==
+
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-6.0.0.tgz#ef9eb1268d85c1bd3caf2c4d36dc350bb080f254"
@@ -5467,6 +5472,11 @@ react-native-image-picker@^4.8.5:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.8.5.tgz#5e5a0af56a13957cadfa1f8ce349d036d62e1499"
   integrity sha512-+pQxkjO8cKv4RKTHOFS0fSHQ11HkWgb+imUPSOS8mwoChkR33aSuzV/6P4t9JCJgsus4qLAlB6BUosdIxw7GTA==
+
+react-native-mask-input@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-mask-input/-/react-native-mask-input-1.2.1.tgz#2f01683844ded3693d0d845bd1beeb2b8367f2e2"
+  integrity sha512-OsVKhdJjljWIt373CPmsyTAjynlMpQKPkz3UQJ0Y48ZTVQa8zyejb9nmwoe15Zvi0uC49RxggDRACgkUxOjt3w==
 
 react-native-safe-area-context@^4.3.1:
   version "4.3.1"
