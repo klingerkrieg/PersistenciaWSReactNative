@@ -1,31 +1,14 @@
-//import base64 from 'react-native-base64'
 import FormData from 'form-data'
+const axios = require('axios').default;
 
-export async function makeRequest(method,action,dados,arquivos){
-    const url = global.wsIP+'/'+action;
-
-    method = method.toUpperCase();
-
-    
-    let options = {}
-    options.method = method;
-    options.headers = {};
-
-    
-    let hasFiles = false;
+function uploadBuild(dados, arquivos){
     if (arquivos != undefined && typeof arquivos == 'object'){
-        hasFiles = true;
-    }
-
-    var data;
-    if (hasFiles){
-        data = new FormData();
+        let data = new FormData();
         for ( var key in dados ) {
             data.append(key, dados[key]);
         }
 
         for ( var key in arquivos ) {
-            hasFiles = true;
             if ( Array.isArray(arquivos[key])){
                 arquivos[key].map((file,i) => {
                     //só adiciona os elementos que tiverem fileName
@@ -43,94 +26,146 @@ export async function makeRequest(method,action,dados,arquivos){
                 data.append(key, fileData);
             }
         }
+        return data;
+    }
+    return false;
+}
 
-        options.headers = {'Content-Type':'multipart/form-data'}
+
+
+export async function makeRequest(method,action,dados,arquivos){
+    
+    //Verifica se é uma chamada para uma url ou uma action
+    let url = null;
+    if (action.indexOf('http') > -1){
+        url = action;
     } else {
-        data = new URLSearchParams(dados).toString();
-        options.headers = {'Content-Type':'application/x-www-form-urlencoded'};
-    }
-    
-    
-    //Basic Authorization
-    //options.headers = {'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)};
-
-    //Authorization com token
-    if (global.token != null){
-        options.headers['x-access-token'] = global.token;
+        url = global.wsIP+'/'+action;
     }
 
-    if (method != 'GET'){
-        options.body = data;
-    }
-    
+    //se for para debugar
     if (global.debug){
-        console.log("\r\n");
+        console.log("====Request=====");
         console.log(method + " " + url);
-        console.log("====Headers=====");
-        console.log("\t" + options.headers['Content-Type']);
-        if (hasFiles){
-            options.body._parts.map((el,i) => {
-                console.log(el[0] + " : " + JSON.stringify(el[1]));
-            })
-            //console.log("\t" + options.body._parts);
-        } else {
-            console.log("\t" + options.body);
+        console.log("\t" + JSON.stringify(dados));
+    }    
+
+    //Configura o header
+    let headers = {};
+
+
+    //Se constroi o conjunto de dados que será enviado
+    //Isso é necessário caso haja upload de arquivos
+    let newDados = uploadBuild(dados, arquivos);
+    if (newDados != false){
+        dados = newDados;
+        headers['Content-Type'] = 'multipart/form-data';
+    }
+
+
+    if (global.token != null) {
+        //Basic Authorization
+        //headers = {'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)};
+        if (global.auth_header == AUTH_NODE){
+            headers['x-access-token'] =  global.token //Node    
+        } else
+        if (global.auth_header == AUTH_LARAVEL){
+            headers['Authorization']  = 'Bearer '+ global.token //Laravel
+        }
+
+        //se houver upload
+        if (newDados != false){
+            headers['Content-Type'] = 'multipart/form-data';
+        }
+
+        if (global.debug){
+            console.log("====Headers=====");
+            console.log("\t" + JSON.stringify(headers))
         }
     }
 
-    try{
-        const rawResponse = await fetch(url,options);
-        const json = await rawResponse.json();
-        if (debug){
-            console.log("====Response=====");
-            console.log(json);
-        }
-        return json;
-    } catch(err){
-        if (debug){
-            console.log("====Response=====");
-            console.log(err);
-        }
-        return {error:true,message:err}
+    let erro = null;
+
+    //faz a requisicao
+    const resp = await axios({
+        method:method,
+        url:url,
+        data:dados,
+        timeout: 3000,
+        headers: headers
+    }).catch(err => {
+        console.log("====Response=====");
+        console.log(err)
+        erro = err;
+        console.log("=================");
+    });
+
+    if (resp == undefined){
+        return {error:1, message:erro};
     }
+
+    //se for para debugar
+    if (global.debug){
+        console.log("====Response=====");
+        console.log(resp.data);
+        console.log("=================");
+    }
+
+    return resp.data
 }
 
 export async function getRemoteImage(path){
-    let options = {
-        method:'GET',
-        fileCache:true,
-        //headers:{'Authorization': 'Basic '+ base64.encode(global.wsUser+':'+global.wsPassword)}
-    }
-
-    if (global.token != null){
-        //options.headers = {'Authorization': 'Bearer '+global.token};
-        options.headers = {'x-access-token': global.token};
-    }
-    
     let url = global.wsIP + "/" + path;
 
+    //Se for para debugar
     if (global.debug){
-        console.log("\r\n");
+        console.log("====Request=====");
         console.log("GET " + url);
-        console.log("====Headers=====");
-        console.log("\t" + options.headers['Authorization']);
     }
+
+    //Configura o header
+    let headers = {};
+    if (global.token != null) {
+        if (global.auth_header == AUTH_NODE){
+            headers['x-access-token'] =  global.token //Node    
+        } else
+        if (global.auth_header == AUTH_LARAVEL){
+            headers['Authorization']  = 'Bearer '+ global.token //Laravel
+        }
+
+        if (global.debug){
+            console.log("====Headers=====");
+            console.log("\t" + JSON.stringify(headers))
+        }
+    }
+
+
+    //faz a requisicao
+    const resp = await axios({
+        method:'GET',
+        url:url,
+        timeout: 5000,
+        headers: headers,
+        responseType: 'blob'
+    }).catch(err => {
+        console.log("====Response=====");
+        console.log(err)
+        erro = err;
+        console.log("=================");
+    });
+
     
     try{
-        const resp = await fetch(url,options);
-        const blob = await resp.blob();
-        //transforma o blob para uma string base64
         return new Promise(resolve => {
             const reader = new FileReader();
-            reader.readAsDataURL(blob);
+            reader.readAsDataURL(resp.data);
             reader.onloadend = () => {
-              const base64data = reader.result;
-              resolve(base64data);
+            const base64data = reader.result;
+            resolve(base64data);
             };
-          });
-
+        });
     } catch(e){
-        console.log("Erro ao recuperar imagem:");
+        console.log("**Erro ao converter imagem para base64");
         console.log(e);
         return "";
     }
